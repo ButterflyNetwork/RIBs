@@ -33,7 +33,7 @@ import static com.uber.rib.core.Preconditions.*;
  * @param <I> type of interactor this router routes.
  * @param <C> type of dependency held by this router.
  */
-public class Router<I extends com.uber.rib.core.Interactor, C extends InteractorBaseComponent> {
+public class Router<I extends com.uber.rib.core.Interactor, C> {
 
   @VisibleForTesting static final String KEY_CHILD_ROUTERS = "Router.childRouters";
   @VisibleForTesting static final String KEY_INTERACTOR = "Router.interactor";
@@ -59,7 +59,9 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
     this.interactor = interactor;
     this.ribRefWatcher = ribRefWatcher;
     this.mainThread = mainThread;
-    component.inject(interactor);
+    if (component instanceof InteractorBaseComponent) {
+      ((InteractorBaseComponent) component).inject(interactor);
+    }
     interactor.setRouter(this);
   }
 

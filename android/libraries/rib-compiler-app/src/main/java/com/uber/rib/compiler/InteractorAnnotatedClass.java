@@ -27,8 +27,14 @@ public class InteractorAnnotatedClass extends AnnotatedClass {
 
   private final List<VariableElement> injectFields;
 
-  public InteractorAnnotatedClass(TypeElement typeElement, List<VariableElement> injectFields) {
+  public final boolean isConstructorInjected;
+
+  public InteractorAnnotatedClass(
+      TypeElement typeElement,
+      boolean isConstructorInjected,
+      List<VariableElement> injectFields) {
     super(typeElement);
+    this.isConstructorInjected = isConstructorInjected;
     this.injectFields = injectFields;
   }
 

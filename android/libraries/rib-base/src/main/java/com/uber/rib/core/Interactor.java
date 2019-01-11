@@ -145,7 +145,7 @@ public abstract class Interactor<P, R extends Router>
 
   /** @return the currently attached presenter if there is one */
   @VisibleForTesting
-  private P getPresenter() {
+  protected P getPresenter() {
     if (presenter == null) {
       throw new IllegalStateException("Attempting to get interactor's presenter before being set.");
     }

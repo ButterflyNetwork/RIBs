@@ -23,6 +23,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
@@ -94,13 +96,27 @@ public class InteractorTestGenerator extends Generator<InteractorAnnotatedClass>
       builder.addParameter(paramSpect);
     }
     String interactorName = interactor.getTypeElement().getSimpleName().toString();
-    builder.addStatement("$L interactor = new $L()", interactorName, interactorName);
-    for (VariableElement injectField : interactor.getInjectFields()) {
+
+    if (interactor.isConstructorInjected) {
+      List<String> params = new ArrayList<>(interactor.getInjectFields().size());
+      for (VariableElement injectField : interactor.getInjectFields()) {
+          params.add(injectField.getSimpleName().toString());
+      }
       builder.addStatement(
-          "interactor.$L = $L",
-          injectField.getSimpleName().toString(),
-          injectField.getSimpleName().toString());
+          "$L interactor = new $L($L)",
+          interactorName,
+          interactorName,
+          String.join(", ", params));
+    } else {
+      builder.addStatement("$L interactor = new $L()", interactorName, interactorName);
+      for (VariableElement injectField : interactor.getInjectFields()) {
+        builder.addStatement(
+                "interactor.$L = $L",
+                injectField.getSimpleName().toString(),
+                injectField.getSimpleName().toString());
+      }
     }
+
     return builder.addStatement("return interactor").build();
   }
 }

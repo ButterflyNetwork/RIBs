@@ -60,11 +60,16 @@ public class InteractorAnnotationVerifier extends AnnotationVerifier<InteractorA
   public InteractorAnnotatedClass verify(TypeElement type) throws VerificationFailedException {
     boolean result = validateInteractorSubclass(type);
     result = result && validateInteractorSuffix(type);
-    result = result && validateNoConstructors(type);
     if (!result) {
       throw new VerificationFailedException();
     } else {
-      return new InteractorAnnotatedClass(type, getInjectFields(type));
+      ExecutableElement injectConstructor = getInjectConstructor(type);
+      if (injectConstructor != null) {
+        List<VariableElement> params = new ArrayList<>(injectConstructor.getParameters());
+        return new InteractorAnnotatedClass(type, true, params);
+      } else {
+        return new InteractorAnnotatedClass(type, false, getInjectFields(type));
+      }
     }
   }
 
@@ -156,5 +161,15 @@ public class InteractorAnnotationVerifier extends AnnotationVerifier<InteractorA
       }
     }
     return injectFields;
+  }
+
+  private ExecutableElement getInjectConstructor(TypeElement type) {
+    List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
+    for (ExecutableElement constructor : constructors) {
+      if (constructor.getAnnotation(Inject.class) != null) {
+        return constructor;
+      }
+    }
+    return null;
   }
 }
