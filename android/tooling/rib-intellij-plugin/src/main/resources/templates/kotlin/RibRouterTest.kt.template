@@ -10,7 +10,7 @@ import org.mockito.MockitoAnnotations
 
 class ${rib_name}RouterTest : RibTestBasePlaceholder() {
 
-  @Mock internal lateinit var component: ${rib_name}Builder.Component
+  @Mock internal lateinit var scope: ${rib_name}Builder.Scope
   @Mock internal lateinit var interactor: ${rib_name}Interactor
 
   private var router: ${rib_name}Router? = null
@@ -19,7 +19,7 @@ class ${rib_name}RouterTest : RibTestBasePlaceholder() {
   fun setup() {
     MockitoAnnotations.initMocks(this)
 
-    router = ${rib_name}Router(interactor, component)
+    router = ${rib_name}Router(interactor, scope)
   }
 
   /**

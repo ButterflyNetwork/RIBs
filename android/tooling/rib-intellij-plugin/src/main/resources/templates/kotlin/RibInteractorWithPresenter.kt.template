@@ -11,10 +11,11 @@ import javax.inject.Inject
  * TODO describe the logic of this scope.
  */
 @RibInteractor
-class ${rib_name}Interactor : Interactor<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router>() {
+class ${rib_name}Interactor @Inject constructor(
+  private val presenter: ${rib_name}Presenter
+): Interactor<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router>() {
 
-  @Inject
-  lateinit var presenter: ${rib_name}Presenter
+  override fun getPresenter(): ${rib_name}Presenter = presenter
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)

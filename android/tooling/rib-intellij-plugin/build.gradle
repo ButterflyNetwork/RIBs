@@ -79,6 +79,7 @@ if (buildIntellijPlugin()) {
         updateSinceUntilBuild false
         sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
         downloadSources false
+        // alternativeIdePath "/Applications/Android Studio 3.3 RC 2.app"
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {

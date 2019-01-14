@@ -19,6 +19,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import java.io.File;
@@ -48,12 +49,14 @@ public abstract class Generator {
   private static final String TEMPLATE_TOKEN_PACKAGE_NAME = "package_name";
   private static final String TEMPLATE_TOKEN_RIBLET_NAME = "rib_name";
   private static final String TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER = "rib_name_to_lower";
+  private static final String TEMPLATE_TOKEN_RIBLET_NAME_TO_SNAKE = "rib_name_to_snake";
 
   private final String packageName;
   private final String ribName;
   private final String templateString;
   private final boolean isKotlin;
   private final Map<String, String> templateValuesMap;
+  private final boolean isIndentFourSpaces = true;  // TODO: Pass as configurable parameter.
 
   /**
    * @param packageName  rib package name.
@@ -68,7 +71,8 @@ public abstract class Generator {
     templateValuesMap = new HashMap<String, String>();
     templateValuesMap.put(TEMPLATE_TOKEN_PACKAGE_NAME, packageName);
     templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME, ribName);
-    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER, ribName.toLowerCase());
+    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER, decapitalize(ribName));
+    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME_TO_SNAKE, snakeCase(ribName));
 
     try {
       String[] resources = getResourceListing(this.getClass(), "partials/");
@@ -100,9 +104,10 @@ public abstract class Generator {
 
       InputStream resourceAsStream1 =
           Generator.class.getResourceAsStream(resource);
-      templateString =
+      String templateBaseString =
           Preconditions.checkNotNull(
               CharStreams.toString(new InputStreamReader(resourceAsStream1, Charsets.UTF_8)));
+      templateString = reindent(templateBaseString);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -201,5 +206,65 @@ public abstract class Generator {
       return result.toArray(new String[result.size()]);
     }
     throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
+  }
+
+  private String reindent(String text) {
+    if (!isIndentFourSpaces) {
+      return text;
+    }
+    StringBuilder s = new StringBuilder();
+    String[] lines = text.split("\n");
+    for (int i = 0; i < lines.length; i++) {
+      String line = lines[i];
+      String prefix;
+      int count = countIndentSpaces(line);
+      if (count == 0) {
+        prefix = "";
+      } else if (count % 2 == 0) {
+        prefix = StringUtils.repeat(" ", count);
+      } else {
+        prefix = StringUtils.repeat(" ", count - 1);
+      }
+      if (i > 0) {
+        s.append('\n');
+      }
+      s.append(prefix);
+      s.append(line);
+    }
+    return s.toString();
+  }
+
+  private int countIndentSpaces(String line) {
+    int count = 0;
+    for (int i = 0; i < line.length(); i++) {
+      if (line.charAt(i) == ' ') {
+        count += 1;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+
+  private String decapitalize(String s) {
+    char c[] = s.toCharArray();
+    c[0] = Character.toLowerCase(c[0]);
+    return new String(c);
+  }
+
+  private String snakeCase(String s) {
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (i == 0) {
+        builder.append(Character.toLowerCase(c));
+      } else {
+        if (Character.isUpperCase(c)) {
+          builder.append('_');
+        }
+        builder.append(Character.toLowerCase(c));
+      }
+    }
+    return builder.toString();
   }
 }
