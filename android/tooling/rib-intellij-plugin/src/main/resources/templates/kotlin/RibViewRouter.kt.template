@@ -1,16 +1,14 @@
 package ${package_name}
 
-import android.view.View
-
 import com.uber.rib.core.ViewRouter
 
 /**
- * Adds and removes children of {@link ${rib_name}Builder.${rib_name}Scope}.
+ * Adds and removes children of [${rib_name}Builder.${rib_name}Scope].
  *
  * TODO describe the possible child configurations of this scope.
  */
 class ${rib_name}Router(
   view: ${rib_name}View,
   interactor: ${rib_name}Interactor,
-  scope: ${rib_name}Builder.Scope
-) : ViewRouter<${rib_name}View, ${rib_name}Interactor, ${rib_name}Builder.Scope>(view, interactor, scope)
+  scope: ${rib_name}Builder.${rib_name}Scope
+) : ViewRouter<${rib_name}View, ${rib_name}Interactor, ${rib_name}Builder.${rib_name}Scope>(view, interactor, scope)

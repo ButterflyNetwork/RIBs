@@ -1,24 +1,21 @@
 package ${package_name}
 
-import com.uber.rib.core.RibTestBasePlaceholder
+import com.nhaarman.mockitokotlin2.mock
 import com.uber.rib.core.InteractorHelper
-
+import com.uber.rib.core.RibTestBasePlaceholder
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 
 class ${rib_name}InteractorTest : RibTestBasePlaceholder() {
 
-  @Mock internal lateinit var presenter: ${rib_name}Interactor.${rib_name}Presenter
-  @Mock internal lateinit var router: ${rib_name}Router
+  private val presenter: ${rib_name}Interactor.${rib_name}Presenter = mock()
 
-  private var interactor: ${rib_name}Interactor? = null
+  private val router: ${rib_name}Router = mock()
+
+  private lateinit var interactor: ${rib_name}Interactor
 
   @Before
   fun setup() {
-    MockitoAnnotations.initMocks(this)
-
     interactor = Test${rib_name}Interactor.create(presenter)
   }
 
@@ -28,8 +25,13 @@ class ${rib_name}InteractorTest : RibTestBasePlaceholder() {
   @Test
   fun anExampleTest_withSomeConditions_shouldPass() {
     // Use InteractorHelper to drive your interactor's lifecycle.
-    InteractorHelper.attach<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router>(interactor!!, presenter, router, null)
-    InteractorHelper.detach(interactor!!)
+    InteractorHelper.attach<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router>(
+      interactor,
+      presenter,
+      router,
+      null
+    )
+    InteractorHelper.detach(interactor)
 
     throw RuntimeException("Remove this test and add real tests.")
   }

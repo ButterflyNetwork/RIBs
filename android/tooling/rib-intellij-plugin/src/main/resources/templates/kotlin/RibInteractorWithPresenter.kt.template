@@ -6,7 +6,7 @@ import com.uber.rib.core.RibInteractor
 import javax.inject.Inject
 
 /**
- * Coordinates Business Logic for [${rib_name}Scope].
+ * Coordinates Business Logic for [${rib_name}Builder.${rib_name}Scope].
  *
  * TODO describe the logic of this scope.
  */
