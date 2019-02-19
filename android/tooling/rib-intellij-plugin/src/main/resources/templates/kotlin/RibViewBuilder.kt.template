@@ -6,7 +6,7 @@ import com.uber.rib.core.InteractorBaseComponent
 import com.uber.rib.core.ViewBuilder
 
 /**
- * Builder for the [${rib_name}Scope].
+ * Builder for the [${rib_name}Builder.${rib_name}Scope].
  *
  * TODO describe this scope's responsibility as a whole.
  */

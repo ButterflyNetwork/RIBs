@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 
 /**
- * Top level view for {@link ${rib_name}Builder.${rib_name}Scope}.
+ * Top level view for [${rib_name}Builder.${rib_name}Scope].
  */
 class ${rib_name}View @JvmOverloads constructor(
   context: Context,
