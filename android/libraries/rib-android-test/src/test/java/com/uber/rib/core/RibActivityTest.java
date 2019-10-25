@@ -148,6 +148,22 @@ public class RibActivityTest {
   }
 
   @Test
+  public void rxActivity_shouldCallback_onNewIntent() {
+    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
+    RibActivity activity = activityController.setup().get();
+    TestObserver<ActivityCallbackEvent.NewIntent> testSub = new TestObserver<>();
+    activity.callbacks(ActivityCallbackEvent.NewIntent.class).subscribe(testSub);
+
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    activity.onNewIntent(intent);
+
+    testSub.assertValueCount(1);
+    ActivityCallbackEvent.NewIntent receivedEvent = testSub.values().get(0);
+    assertThat(receivedEvent.getType()).isEqualTo(ActivityCallbackEvent.Type.NEW_INTENT);
+    assertThat(receivedEvent.getIntent()).isEqualTo(intent);
+  }
+
+  @Test
   public void rxActivity_delaySubscription_shouldIgnoreOtherEvents() {
     ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
     final RibActivity activity = activityController.get();

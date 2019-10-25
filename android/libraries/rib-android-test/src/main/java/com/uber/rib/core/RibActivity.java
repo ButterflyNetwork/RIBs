@@ -164,6 +164,14 @@ public abstract class RibActivity extends AppCompatActivity
 
   @Override
   @CallSuper
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+
+    callbacksRelay.accept(ActivityCallbackEvent.createOnActivityNewIntentEvent(intent));
+  }
+
+  @Override
+  @CallSuper
   protected void onResume() {
     super.onResume();
 

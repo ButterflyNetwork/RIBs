@@ -48,6 +48,17 @@ public class ActivityCallbackEvent implements ActivityEvent {
   }
 
   /**
+   * Creates an event for activity new intent.
+   *
+   * @param intent the new intent
+   * @return the created ActivityEvent.
+   */
+  public static ActivityCallbackEvent.NewIntent createOnActivityNewIntentEvent(
+          Intent intent) {
+    return new NewIntent(intent);
+  }
+
+  /**
    * Creates an activity event for a given type.
    *
    * @param type The type of event to get.
@@ -89,7 +100,8 @@ public class ActivityCallbackEvent implements ActivityEvent {
   public enum Type implements BaseType {
     LOW_MEMORY,
     ACTIVITY_RESULT,
-    SAVE_INSTANCE_STATE
+    SAVE_INSTANCE_STATE,
+    NEW_INTENT
   }
 
   /**
@@ -143,6 +155,25 @@ public class ActivityCallbackEvent implements ActivityEvent {
     @Nullable
     public Bundle getOutState() {
       return outState;
+    }
+  }
+
+  /**
+   * An {@link ActivityCallbackEvent} that encapsulates information from {@link
+   * Activity#onNewIntent(Intent)}.
+   */
+  public static class NewIntent extends ActivityCallbackEvent {
+
+    private final Intent intent;
+
+    private NewIntent(Intent intent) {
+      super(Type.NEW_INTENT);
+      this.intent = intent;
+    }
+
+    /** @return this event's activity new intent. */
+    public Intent getIntent() {
+      return intent;
     }
   }
 }
