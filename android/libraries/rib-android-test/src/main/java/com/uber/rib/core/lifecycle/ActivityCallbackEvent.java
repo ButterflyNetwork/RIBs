@@ -59,6 +59,19 @@ public class ActivityCallbackEvent implements ActivityEvent {
   }
 
   /**
+   * Creates an event for request permissions result.
+   *
+   * @param requestCode the request code passed in when request permissions.
+   * @param permissions the requested permissions.
+   * @param grantResults the grant results for the corresponding permissions.
+   * @return the created ActivityEvent.
+   */
+  public static ActivityCallbackEvent.RequestPermissionsResult createRequestPermissionsResultEvent(
+      int requestCode, String[] permissions, int[] grantResults) {
+    return new RequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
+  /**
    * Creates an activity event for a given type.
    *
    * @param type The type of event to get.
@@ -101,7 +114,8 @@ public class ActivityCallbackEvent implements ActivityEvent {
     LOW_MEMORY,
     ACTIVITY_RESULT,
     SAVE_INSTANCE_STATE,
-    NEW_INTENT
+    NEW_INTENT,
+    REQUEST_PERMISSION_RESULT
   }
 
   /**
@@ -174,6 +188,39 @@ public class ActivityCallbackEvent implements ActivityEvent {
     /** @return this event's activity new intent. */
     public Intent getIntent() {
       return intent;
+    }
+  }
+
+  /**
+   * An {@link ActivityCallbackEvent} that encapsulates information from {@link
+   * Activity#onRequestPermissionsResult(int, String[], int[])}.
+   */
+  public static class RequestPermissionsResult extends ActivityCallbackEvent {
+
+    private final int requestCode;
+    private final String[] permissions;
+    private final int[] grantResults;
+
+    private RequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+      super(Type.REQUEST_PERMISSION_RESULT);
+      this.requestCode = requestCode;
+      this.permissions = permissions;
+      this.grantResults = grantResults;
+    }
+
+    /** @return the request code passed in when request permissions. */
+    public int getRequestCode() {
+      return requestCode;
+    }
+
+    /** @return the requested permissions. */
+    public String[] getPermissions() {
+      return permissions;
+    }
+
+    /** @return the grant results for the corresponding permissions. */
+    public int[] getGrantResults() {
+      return grantResults;
     }
   }
 }

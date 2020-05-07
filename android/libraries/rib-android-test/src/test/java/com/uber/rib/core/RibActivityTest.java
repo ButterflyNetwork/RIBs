@@ -15,10 +15,12 @@
  */
 package com.uber.rib.core;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.content.pm.PackageManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -161,6 +163,27 @@ public class RibActivityTest {
     ActivityCallbackEvent.NewIntent receivedEvent = testSub.values().get(0);
     assertThat(receivedEvent.getType()).isEqualTo(ActivityCallbackEvent.Type.NEW_INTENT);
     assertThat(receivedEvent.getIntent()).isEqualTo(intent);
+  }
+
+  @Test
+  public void rxActivity_shouldCallback_oRequestPermissionsResult() {
+    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
+    RibActivity activity = activityController.setup().get();
+    TestObserver<ActivityCallbackEvent.RequestPermissionsResult> testSub = new TestObserver<>();
+    activity.callbacks(ActivityCallbackEvent.RequestPermissionsResult.class).subscribe(testSub);
+
+    int requestCode = 1024;
+    String[] permission = {Manifest.permission.READ_CALENDAR};
+    int[] results = {PackageManager.PERMISSION_GRANTED};
+    activity.onRequestPermissionsResult(requestCode, permission, results);
+
+    testSub.assertValueCount(1);
+    ActivityCallbackEvent.RequestPermissionsResult receivedEvent = testSub.values().get(0);
+    assertThat(receivedEvent.getType())
+        .isEqualTo(ActivityCallbackEvent.Type.REQUEST_PERMISSION_RESULT);
+    assertThat(receivedEvent.getRequestCode()).isEqualTo(requestCode);
+    assertThat(receivedEvent.getPermissions()).isEqualTo(permission);
+    assertThat(receivedEvent.getGrantResults()).isEqualTo(results);
   }
 
   @Test

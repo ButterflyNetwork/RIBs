@@ -17,6 +17,7 @@ package com.uber.rib.core;
 
 import android.content.Intent;
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 import com.jakewharton.rxrelay2.BehaviorRelay;
@@ -193,6 +194,19 @@ public abstract class RibActivity extends AppCompatActivity
 
     callbacksRelay.accept(
         ActivityCallbackEvent.createOnActivityResultEvent(requestCode, resultCode, data));
+  }
+
+  @Override
+  @CallSuper
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                            @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    callbacksRelay.accept(
+        ActivityCallbackEvent.createRequestPermissionsResultEvent(
+            requestCode, permissions, grantResults
+        )
+    );
   }
 
   @Override
